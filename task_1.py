@@ -1,3 +1,11 @@
+# This initalises the key parameters e.g. [p, q, e]
+
+keys_A = []
+keys_B = []
+keys_C = []
+keys_D = []
+
+
 '''
 Task 1: Digital Signature-Based Record Authentication (10 Marks)
 Each inventory node generates a new inventory record representing a recent item update. Before the record
