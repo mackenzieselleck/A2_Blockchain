@@ -1,0 +1,5 @@
+ID: 01
+Quantity: 32
+Price: 12
+Location: D
+
