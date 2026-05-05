@@ -50,3 +50,10 @@ q = 1330909125725073469794953234151525201084537607
 e = 33981230465225879849295979
 
 '''
+
+# RSA components 
+# def pub_param_n
+# def totient
+# def private_key
+# def ciphertext
+# def plaintext
