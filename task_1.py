@@ -105,8 +105,10 @@ while True:
         break
 
 # start calc-ing key components based off chosen inventory
-# printing to check if working
-# used '-' just to help me visually break it up, hope thats all good :)
+# !!!printing to check if working!!!
+# used commented dashs just to help me visually break it up, hope thats all good :)
+# AND WILL GET RID OF PRINTS DW
+
 
 # for inventory A stuff ---------------------------------------------------------
 if filename == "inv_A.txt":
