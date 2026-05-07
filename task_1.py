@@ -23,6 +23,7 @@ keys_D = {
           'e':33981230465225879849295979
          }
 
+# FUNCTIONS:
 # This gets the record from the inventory and formats like so: 
 # ID|QUANTITY|PRICE|LOCATION --> 01|32|12|D to then later be hashed, etc...
 def get_record(filename):
@@ -105,6 +106,9 @@ while True:
 
 # start calc-ing key components based off chosen inventory
 # printing to check if working
+# used '-' just to help me visually break it up, hope thats all good :)
+
+# for inventory A stuff ---------------------------------------------------------
 if filename == "inv_A.txt":
     print(
         "The key parameters are:\n"
@@ -147,37 +151,146 @@ if filename == "inv_A.txt":
     print(f"This is the decrypted verified record in hex: {hex(dec_verif_rec)}\n")
     print(f"This is the hashed record to compare to the decrypted one: {hashed_record}\n")
 
-
-
-'''
-keeping just incase:
-
-    # see if entered inventory is valid
-    if filename != "inv_A.txt" or "inv_B.txt" or "inv_C.txt" or "inv_D.txt":
-        print("ERROR: Inventory not presents. Choose either:\n" 
-              "inv_A.txt\ninv_B.txt\ninv_C.txt\ninv_D.txt")
+# for inventory B stuff ---------------------------------------------------------
+elif filename == "inv_B.txt":
+    print(
+        "The key parameters are:\n"
+        f"p = {keys_B['p']}\n"
+        f"q = {keys_B['q']}\n"
+        f"e = {keys_B['e']}\n"
+        )
         
-    else:
-        filename = filename
-        break
-'''
-
-'''
-
-def verify(ciphertext, signed_record, e, n_param):
-    verified_record = pow(signed_record, e, n_param)
+    # getting key components
+    n_param = calc_n(keys_B['p'], keys_B['q'])
+    print(f"This is the public key parameter 'n' : {n_param}\n")
+    totient_param = calc_totient(keys_B['p'], keys_B['q'])
+    print(f"This is the totient parameter: {totient_param}\n")
+    d_param = calc_priv_key(keys_B['e'], totient_param)
+    print(f"This is the private key: {d_param}\n") # obvs keep this secret
     
-    if verified_record == ciphertext:
-        return print("The record is verified and has NOT been tampered with")
-    else:
-        return print("The record is unverified thus tampered")
+    # initialising record + formating
+    record = get_record(filename)
+    print(f"This is the record: {record}\n")
+    hashed_record = hashlib.md5(record.encode('utf-8')).hexdigest()
+    print(f"This is the hashed record: {hashed_record}\n")
+    decimal_record = int(hashed_record, 16)
+    print(f"This is the hashed record in decimal format: {decimal_record}\n")
 
-# This decrypts the record
-def decrypt_rec(verified_record, d_param, n_param):
-    dec_verif_rec = pow(verified_record, d_param, n_param)
-    return dec_verif_rec
+    # encrypting record
+    ciphertext = encrypt_rec(decimal_record, keys_B['e'], n_param)
+    print(f"This is the encrypted record: {ciphertext}\n")
 
-'''
+    # signing record
+    signed_record = sign(ciphertext, d_param, n_param)
+    print(f"This is the signed record: {signed_record}\n")
+
+    # verifying record
+    verified_record = verify(ciphertext, signed_record, keys_B['e'], n_param)
+    print(f"This is the encrypted verified record: {verified_record}\n")
+
+    # decrypting verified record
+    dec_verif_rec = decrypt_rec(verified_record, d_param, n_param)
+    print(f"This the decrypted verified record in decimal: {dec_verif_rec}\n")
+    print(f"This is the decrypted verified record in hex: {hex(dec_verif_rec)}\n")
+    print(f"This is the hashed record to compare to the decrypted one: {hashed_record}\n")
+
+# for inventory C stuff ---------------------------------------------------------
+elif filename == "inv_C.txt":
+    print(
+        "The key parameters are:\n"
+        f"p = {keys_C['p']}\n"
+        f"q = {keys_C['q']}\n"
+        f"e = {keys_C['e']}\n"
+        )
+        
+    # getting key components
+    n_param = calc_n(keys_C['p'], keys_C['q'])
+    print(f"This is the public key parameter 'n' : {n_param}\n")
+    totient_param = calc_totient(keys_C['p'], keys_C['q'])
+    print(f"This is the totient parameter: {totient_param}\n")
+    d_param = calc_priv_key(keys_C['e'], totient_param)
+    print(f"This is the private key: {d_param}\n") # obvs keep this secret
+    
+    # initialising record + formating
+    record = get_record(filename)
+    print(f"This is the record: {record}\n")
+    hashed_record = hashlib.md5(record.encode('utf-8')).hexdigest()
+    print(f"This is the hashed record: {hashed_record}\n")
+    decimal_record = int(hashed_record, 16)
+    print(f"This is the hashed record in decimal format: {decimal_record}\n")
+
+    # encrypting record
+    ciphertext = encrypt_rec(decimal_record, keys_C['e'], n_param)
+    print(f"This is the encrypted record: {ciphertext}\n")
+
+    # signing record
+    signed_record = sign(ciphertext, d_param, n_param)
+    print(f"This is the signed record: {signed_record}\n")
+
+    # verifying record
+    verified_record = verify(ciphertext, signed_record, keys_C['e'], n_param)
+    print(f"This is the encrypted verified record: {verified_record}\n")
+
+    # decrypting verified record
+    dec_verif_rec = decrypt_rec(verified_record, d_param, n_param)
+    print(f"This the decrypted verified record in decimal: {dec_verif_rec}\n")
+    print(f"This is the decrypted verified record in hex: {hex(dec_verif_rec)}\n")
+    print(f"This is the hashed record to compare to the decrypted one: {hashed_record}\n")
+
+# for inventory D stuff ---------------------------------------------------------
+elif filename == "inv_D.txt":
+    print(
+        "The key parameters are:\n"
+        f"p = {keys_D['p']}\n"
+        f"q = {keys_D['q']}\n"
+        f"e = {keys_D['e']}\n"
+        )
+        
+    # getting key components
+    n_param = calc_n(keys_D['p'], keys_D['q'])
+    print(f"This is the public key parameter 'n' : {n_param}\n")
+    totient_param = calc_totient(keys_D['p'], keys_D['q'])
+    print(f"This is the totient parameter: {totient_param}\n")
+    d_param = calc_priv_key(keys_D['e'], totient_param)
+    print(f"This is the private key: {d_param}\n") # obvs keep this secret
+    
+    # initialising record + formating
+    record = get_record(filename)
+    print(f"This is the record: {record}\n")
+    hashed_record = hashlib.md5(record.encode('utf-8')).hexdigest()
+    print(f"This is the hashed record: {hashed_record}\n")
+    decimal_record = int(hashed_record, 16)
+    print(f"This is the hashed record in decimal format: {decimal_record}\n")
+
+    # encrypting record
+    ciphertext = encrypt_rec(decimal_record, keys_D['e'], n_param)
+    print(f"This is the encrypted record: {ciphertext}\n")
+
+    # signing record
+    signed_record = sign(ciphertext, d_param, n_param)
+    print(f"This is the signed record: {signed_record}\n")
+
+    # verifying record
+    verified_record = verify(ciphertext, signed_record, keys_D['e'], n_param)
+    print(f"This is the encrypted verified record: {verified_record}\n")
+
+    # decrypting verified record
+    dec_verif_rec = decrypt_rec(verified_record, d_param, n_param)
+    print(f"This the decrypted verified record in decimal: {dec_verif_rec}\n")
+    print(f"This is the decrypted verified record in hex: {hex(dec_verif_rec)}\n")
+    print(f"This is the hashed record to compare to the decrypted one: {hashed_record}\n")
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -203,45 +316,7 @@ keys_D = {
           'q':1330909125725073469794953234151525201084537607,
           'e':33981230465225879849295979
          }
-'''
 
-
-
-
-
-
-
-
-
-
-'''
-hash = "098f6bcd4621d373cade4e832627b4f6" #means 'test' in md5
-hashhex_to_dec_ = int(hash, 16)
-print(f'This is the hash (hexadecimal): {hash}')
-print(f'This is the decimal of the hex: {hashhex_to_dec_}')
-'''
- 
-
-
-'''
-def RSA_components(record, p, q, e):
-
-    def calc_n(p, q):
-        n_param = p * q
-
-    def calc_totient(p, q):
-        totient_param = (p - 1) * (q - 1)
-
-    def calc_priv_key(e):
-        d_param = pow(e, -1, calc_totient())  #pow(e, -1, calc_totient()) == d = e^-1 mod totient
-
-    def encrypt_rec(record, e, n):
-        ciphertext = pow(record, e, n)            #pow(m, e, n) == c = m^e mod n
-
-    return
-'''
-
-'''
 Task 1: Digital Signature-Based Record Authentication (10 Marks)
 Each inventory node generates a new inventory record representing a recent item update. Before the record
 is broadcast to the distributed inventory system, the originating node must apply a digital signature to ensure
