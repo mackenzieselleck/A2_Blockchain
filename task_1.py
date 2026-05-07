@@ -1,3 +1,16 @@
+def get_record(filename):
+    inventory = {}
+
+    with open(filename, 'r') as f:
+        for line in f:
+            line = line.strip()
+            if ":" in line:
+                cat, val = line.split(":")
+                inventory[cat.strip().upper()] = val.strip()
+    
+    formatted_rec = f"{inventory['ID']}|{inventory['QUANTITY']}|{inventory['PRICE']}|{inventory['LOCATION']}"
+    return formatted_rec
+
 # This initalises the key parameters e.g. [p, q, e]
 keys_A = [1210613765735147311106936311866593978079938707, 
           1247842850282035753615951347964437248190231863, 
@@ -15,7 +28,6 @@ keys_D = [1287737200891425621338551020762858710281638317,
           1330909125725073469794953234151525201084537607, 
           33981230465225879849295979]
 
-# This
 def calc_n(p, q):
     n_param = p * q
     return n_param
@@ -24,26 +36,66 @@ def calc_totient(p, q):
     totient_param = (p - 1) * (q - 1)
     return totient_param
 
-def calc_priv_key(e, totient_param): # d = e^-1 mod totient
-    d_param = pow(e, -1, totient_param) # if not allowed pow() then do it likw this 
+def calc_priv_key(e, totient_param):
+    d_param = pow(e, -1, totient_param) #pow(e, -1, totient_param) == d = e^-1 mod totient
     return d_param
 
-def encrypt_rec():
-    return
+def encrypt_rec(record, e, n):
+    ciphertext = pow(record, e, n) #pow(m, e, n) == c = m^e mod n
+    return ciphertext
 
- 
+def sign(ciphertext, d_param, n):
+    signed_record = pow(ciphertext, d_param, n)
+    return signed_record
+
+def verify(ciphertext, signed_record, e, n):
+    verified_record = pow(signed_record, e, n)
+    
+    if verified_record == ciphertext:
+        return print("The record is verified and has NOT been tampered with")
+    else:
+        return print("The record is unverified thus tampered")
+
+def decrypt_rec(verified_record, d_param, n):
+    dec_verif_rec = pow(verified_record, d_param, n)
+    return dec_verif_rec
+
+
+
 
 
 
 
 
 '''
-get key values (A, B, C, D) from A2_Blockchain/A2_ListOfKeys.txt and assign them to variables:
-in_A_p, in_A_q, in_A_e
-in_B_p, in_B_q, in_B_e
-in_C_p, in_C_q, in_C_e
-in_D_p, in_D_q, in_D_e
+hash = "098f6bcd4621d373cade4e832627b4f6" #means 'test' in md5
+hashhex_to_dec_ = int(hash, 16)
+print(f'This is the hash (hexadecimal): {hash}')
+print(f'This is the decimal of the hex: {hashhex_to_dec_}')
+'''
+ 
 
+
+'''
+def RSA_components(record, p, q, e):
+
+    def calc_n(p, q):
+        n_param = p * q
+
+    def calc_totient(p, q):
+        totient_param = (p - 1) * (q - 1)
+
+    def calc_priv_key(e):
+        d_param = pow(e, -1, calc_totient())  #pow(e, -1, calc_totient()) == d = e^-1 mod totient
+
+    def encrypt_rec(record, e, n):
+        ciphertext = pow(record, e, n)            #pow(m, e, n) == c = m^e mod n
+
+    return
+'''
+
+
+'''
 Part 1
 Inventory A
 p = 1210613765735147311106936311866593978079938707
@@ -62,13 +114,7 @@ Inventory D
 p = 1287737200891425621338551020762858710281638317
 q = 1330909125725073469794953234151525201084537607
 e = 33981230465225879849295979
-
 '''
-
-
-
-
-
 
 '''
 Task 1: Digital Signature-Based Record Authentication (10 Marks)
@@ -92,12 +138,3 @@ integrity of the received record before it proceeds to the consensus stage.
 5. In your report, explain how digital signatures contribute to secure record submission in a distributed
 inventory environment.
 '''
-
-
-
-# RSA components 
-# def pub_param_n
-# def totient
-# def private_key
-# def ciphertext
-# def plaintext
