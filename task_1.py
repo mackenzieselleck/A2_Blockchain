@@ -36,7 +36,6 @@ def get_record(filename):
                 inventory[cat.strip().upper()] = val.strip()
     
     formatted_rec = f"{inventory['ID']}|{inventory['QUANTITY']}|{inventory['PRICE']}|{inventory['LOCATION']}"
-    formatted_rec = hashlib.md5(formatted_rec.encode('utf-8')).hexdigest()
     return formatted_rec
 
 # This calculates 'n' public key parameter
@@ -69,9 +68,10 @@ def verify(ciphertext, signed_record, e, n_param):
     verified_record = pow(signed_record, e, n_param)
     
     if verified_record == ciphertext:
-        return print("The record is verified and has NOT been tampered with")
+        print("The record is verified and has NOT been tampered with.\n")
+        return verified_record
     else:
-        return print("The record is unverified thus tampered")
+        return print("The record is unverified thus tampered.\n")
 
 # This decrypts the record
 def decrypt_rec(verified_record, d_param, n_param):
@@ -79,49 +79,88 @@ def decrypt_rec(verified_record, d_param, n_param):
     return dec_verif_rec
 
 
-
 # THIS IS JUST TESTING IF ALL WORKS:
-filename = input("What inventory is the new record from?")
+while True:
+    input = input("Select the number for which inventory the new record is from: \n"
+        "1. inv_A.txt\n"
+        "2. inv_B.txt\n"
+        "3. inv_C.txt\n"
+        "4. inv_D.txt\n")
+    if input == "1":
+        print("\nInventory A has been selected.")
+        filename = "inv_A.txt"
+        break
+    elif input == "2":
+        print("\nInventory B has been selected.")
+        filename = "inv_B.txt"
+        break
+    elif input == "3":
+        print("\nInventory C has been selected.")
+        filename = "inv_C.txt"
+        break
+    elif input == "4":
+        print("\nInventory D has been selected.")
+        filename = "inv_D.txt"
+        break
 
-# see if entered inventory is valid
-if filename != 'inv_A.txt' or 'inv_B.txt' or 'inv_C.txt' or 'inv_D.txt':
-    print("ERROR: Inventory not presents. Choose either:\n" 
-    "inv_A.txt\ninv_B.txt\ninv_C.txt\ninv_D.txt")
-
-# start calc-ing key components based off chosen inventory entered
-# printing to check if all has worked
-if 'A' in filename:
+# start calc-ing key components based off chosen inventory
+# printing to check if working
+if filename == "inv_A.txt":
     print(
-           "The keys used are:"
-          f"p = {keys_A['p']}\n"
-          f"q = {keys_A['q']}\n"
-          f"e = {keys_A['e']}\n"
-         )
-    
+        "The key parameters are:\n"
+        f"p = {keys_A['p']}\n"
+        f"q = {keys_A['q']}\n"
+        f"e = {keys_A['e']}\n"
+        )
+        
     # getting key components
     n_param = calc_n(keys_A['p'], keys_A['q'])
-    print(f"This is the public key parameter 'n' : {n_param}")
+    print(f"This is the public key parameter 'n' : {n_param}\n")
     totient_param = calc_totient(keys_A['p'], keys_A['q'])
-    print(f"This is the totient parameter: {totient_param}")
+    print(f"This is the totient parameter: {totient_param}\n")
     d_param = calc_priv_key(keys_A['e'], totient_param)
-    print(f"This is the private key: {d_param}") # obvs keep this secret
+    print(f"This is the private key: {d_param}\n") # obvs keep this secret
     
     # initialising record + formating
     record = get_record(filename)
-    print(f"This is the record: {record}")
-    decimal_record = int(record, 16)
-    print(f"This is the hashed record in decimal format: {decimal_record}")
+    print(f"This is the record: {record}\n")
+    hashed_record = hashlib.md5(record.encode('utf-8')).hexdigest()
+    print(f"This is the hashed record: {hashed_record}\n")
+    decimal_record = int(hashed_record, 16)
+    print(f"This is the hashed record in decimal format: {decimal_record}\n")
 
-    # encryption
+    # encrypting record
     ciphertext = encrypt_rec(decimal_record, keys_A['e'], n_param)
-    print(f"This is the encrypted record: {ciphertext}")
+    print(f"This is the encrypted record: {ciphertext}\n")
 
-    # signing
+    # signing record
     signed_record = sign(ciphertext, d_param, n_param)
-    print(f"This is the signed record: {signed_record}")
+    print(f"This is the signed record: {signed_record}\n")
 
-    # verifying 
+    # verifying record
     verified_record = verify(ciphertext, signed_record, keys_A['e'], n_param)
+    print(f"This is the encrypted verified record: {verified_record}\n")
+
+    # decrypting verified record
+    dec_verif_rec = decrypt_rec(verified_record, d_param, n_param)
+    print(f"This the decrypted verified record in decimal: {dec_verif_rec}\n")
+    print(f"This is the decrypted verified record in hex: {hex(dec_verif_rec)}\n")
+    print(f"This is the hashed record to compare to the decrypted one: {hashed_record}\n")
+
+
+
+'''
+keeping just incase:
+
+    # see if entered inventory is valid
+    if filename != "inv_A.txt" or "inv_B.txt" or "inv_C.txt" or "inv_D.txt":
+        print("ERROR: Inventory not presents. Choose either:\n" 
+              "inv_A.txt\ninv_B.txt\ninv_C.txt\ninv_D.txt")
+        
+    else:
+        filename = filename
+        break
+'''
 
 '''
 
