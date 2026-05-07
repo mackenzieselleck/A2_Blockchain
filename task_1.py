@@ -130,7 +130,7 @@ if filename == "inv_A.txt":
     # initialising record + formating
     record = get_record(filename)
     print(f"This is the record: {record}\n")
-    hashed_record = hashlib.md5(record.encode('utf-8')).hexdigest()
+    hashed_record = hashlib.sha256(record.encode('utf-8')).hexdigest()
     print(f"This is the hashed record: {hashed_record}\n")
     decimal_record = int(hashed_record, 16)
     print(f"This is the hashed record in decimal format: {decimal_record}\n")
@@ -173,7 +173,7 @@ elif filename == "inv_B.txt":
     # initialising record + formating
     record = get_record(filename)
     print(f"This is the record: {record}\n")
-    hashed_record = hashlib.md5(record.encode('utf-8')).hexdigest()
+    hashed_record = hashlib.sha256(record.encode('utf-8')).hexdigest()
     print(f"This is the hashed record: {hashed_record}\n")
     decimal_record = int(hashed_record, 16)
     print(f"This is the hashed record in decimal format: {decimal_record}\n")
@@ -216,7 +216,7 @@ elif filename == "inv_C.txt":
     # initialising record + formating
     record = get_record(filename)
     print(f"This is the record: {record}\n")
-    hashed_record = hashlib.md5(record.encode('utf-8')).hexdigest()
+    hashed_record = hashlib.sha256(record.encode('utf-8')).hexdigest()
     print(f"This is the hashed record: {hashed_record}\n")
     decimal_record = int(hashed_record, 16)
     print(f"This is the hashed record in decimal format: {decimal_record}\n")
@@ -259,7 +259,7 @@ elif filename == "inv_D.txt":
     # initialising record + formating
     record = get_record(filename)
     print(f"This is the record: {record}\n")
-    hashed_record = hashlib.md5(record.encode('utf-8')).hexdigest()
+    hashed_record = hashlib.sha256(record.encode('utf-8')).hexdigest()
     print(f"This is the hashed record: {hashed_record}\n")
     decimal_record = int(hashed_record, 16)
     print(f"This is the hashed record in decimal format: {decimal_record}\n")
