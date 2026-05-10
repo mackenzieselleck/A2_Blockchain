@@ -42,9 +42,11 @@ def gen_ver(hashed_new_rec, dec_new_rec, signed_recored, p, q, e):
 
     # Testing is decrypted signature is the same as record
     if dec_new_rec == decrypt_ver:
-        return True, print(f"Signature Verificaiton VALID\nNew Record Hash: {hashed_new_rec}\nDecrypted Sig Hash: {hashed_decrypt_rec}") #Inputed New Record (dec): {dec_new_rec}\nDecrypted Verified New Record: {decrypt_ver}
+        print(f"Signature Verificaiton VALID\nNew Record Hash: {hashed_new_rec}\nDecrypted Sig Hash: {hashed_decrypt_rec}") #Inputed New Record (dec): {dec_new_rec}\nDecrypted Verified New Record: {decrypt_ver}
+        return True
     else:
-        return False, print(f"Signature Verificaiton INVALID")
+        print(f"Signature Verificaiton INVALID")
+        return False
 
 # Simulating a new record coming in 
 # (new record incoming to be signed/verified and sent off for consensus)
@@ -56,7 +58,7 @@ new_record.append(input("Location: ").upper()) #Location
 
 '''
 NEW RECORD SIMULATION without using user input:
-
+(get rid off above inputs obvs)
 new_record = f"05|13|24|A"
 # then go through signing/verifiying
 '''
