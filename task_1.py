@@ -1,7 +1,7 @@
 # For hashing the record 
 import hashlib 
 
-# This initalises the key parameters e.g. [p, q, e]
+# This initalises the key parameters
 keys_A = {
           'p':1210613765735147311106936311866593978079938707,
           'q':1247842850282035753615951347964437248190231863,
@@ -22,6 +22,58 @@ keys_D = {
           'q':1330909125725073469794953234151525201084537607,
           'e':33981230465225879849295979
          }
+
+def signing(record, p, q, e):
+   
+    n = p * q                          # calc-ing 'n' pub-key parameter
+    totient = (p - 1) * (q - 1)        # calc-ing 'totient' for private key gen
+    d = pow(e, -1, totient)            # calc-ing 'd' private key for signing pow(e, -1, totient_param) == d = e^-1 mod totient
+    signed_record = pow(record, d, n)  # calc-ing 's' signed record pow(record, d, n) == s = hash_rec^d mod n
+    
+    return signed_record
+
+# Simulating a new record coming in 
+# (new record incoming to be signed/verified and sent off for consensus)
+new_record = []  # ['ID', 'Quantity', 'Price', 'Location'] 
+
+new_record.append(input("ID: ")) #ID
+new_record.append(input("Quantity: ")) #Quantity
+new_record.append(input("Price: ")) #Price
+new_record.append(input("Location: ").upper()) #Location
+
+# formatting rec for hashing 
+new_record = f"{new_record[0]}|{new_record[1]}|{new_record[2]}|{new_record[3]}"
+print(new_record)
+
+# hashing new rec using SHA-256
+hashed_new_rec = hashlib.sha256(new_record.encode('utf-8')).hexdigest()
+print(hashed_new_rec)
+
+# turning hash to decimal for signing an verifiying
+dec_new_rec = int(hashed_new_rec, 16)  # 16 bc hexadec is base 16
+print(dec_new_rec)
+
+# seeing what keys to use based off of the claimed lcoation the new record is from
+# record locaiton category means *where the record has been added*
+if new_record[3] == 'A':     
+    signed_rec = signing(dec_new_rec, keys_A['p'], keys_A['q'], keys_A['e'])
+    print(f"Signed Record: {signed_rec}") # see if worked
+
+elif new_record[3] == 'B':
+    signed_rec = signing(dec_new_rec, keys_B['p'], keys_B['q'], keys_B['e'])
+    print(f"Signed Record: {signed_rec}") # see if worked
+
+elif new_record[3] == 'C':
+    signed_rec = signing(dec_new_rec, keys_C['p'], keys_C['q'], keys_C['e'])
+    print(f"Signed Record: {signed_rec}") # see if worked
+    
+elif new_record[3] == 'D':
+    signed_rec = signing(dec_new_rec, keys_D['p'], keys_D['q'], keys_D['e'])
+    print(f"Signed Record: {signed_rec}") # see if worked
+
+
+
+'''
 
 # FUNCTIONS:
 # This gets the record from the inventory and formats like so: 
@@ -78,7 +130,6 @@ def verify(ciphertext, signed_record, e, n_param):
 def decrypt_rec(verified_record, d_param, n_param):
     dec_verif_rec = pow(verified_record, d_param, n_param)
     return dec_verif_rec
-
 
 # THIS IS JUST TESTING IF ALL WORKS:
 while True:
@@ -282,42 +333,6 @@ elif filename == "inv_D.txt":
     print(f"This is the decrypted verified record in hex: {hex(dec_verif_rec)}\n")
     print(f"This is the hashed record to compare to the decrypted one: {hashed_record}\n")
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-'''
-keys_A = {
-          'p':1210613765735147311106936311866593978079938707,
-          'q':1247842850282035753615951347964437248190231863,
-          'e':815459040813953176289801
-         }
-keys_B = {
-          'p':787435686772982288169641922308628444877260947,
-          'q':1325305233886096053310340418467385397239375379,
-          'e':692450682143089563609787
-         }
-keys_C = {
-          'p':1014247300991039444864201518275018240361205111,
-          'q':904030450302158058469475048755214591704639633,
-          'e':1158749422015035388438057
-         }
-keys_D = {
-          'p':1287737200891425621338551020762858710281638317,
-          'q':1330909125725073469794953234151525201084537607,
-          'e':33981230465225879849295979
-         }
 
 Task 1: Digital Signature-Based Record Authentication (10 Marks)
 Each inventory node generates a new inventory record representing a recent item update. Before the record
