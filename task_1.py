@@ -23,7 +23,8 @@ keys_D = {
           'e':33981230465225879849295979
          }
 
-def signing(record, p, q, e):
+# SIGNING FUNCTION
+def gen_sig(record, p, q, e):
    
     n = p * q                          # calc-ing 'n' pub-key parameter
     totient = (p - 1) * (q - 1)        # calc-ing 'totient' for private key gen
@@ -32,44 +33,67 @@ def signing(record, p, q, e):
     
     return signed_record
 
+# VERIFYING FUNCTION
+def gen_ver(hashed_new_rec, dec_new_rec, signed_recored, p, q, e):
+    
+    n = p * q                                 # calc-ing senders 'n' pub-key parameter
+    decrypt_ver = pow(signed_recored, e, n)   # decrypting signature
+    hashed_decrypt_rec = hex(decrypt_ver)[2:] # THIS IS SHOWING THAT THE OG HASH OF THE RECORD IS tHE SAME AS IF decrypted sig WAS HASHED
+
+    # Testing is decrypted signature is the same as record
+    if dec_new_rec == decrypt_ver:
+        return True, print(f"Signature Verificaiton VALID\nNew Record Hash: {hashed_new_rec}\nDecrypted Sig Hash: {hashed_decrypt_rec}") #Inputed New Record (dec): {dec_new_rec}\nDecrypted Verified New Record: {decrypt_ver}
+    else:
+        return False, print(f"Signature Verificaiton INVALID")
+
 # Simulating a new record coming in 
 # (new record incoming to be signed/verified and sent off for consensus)
 new_record = []  # ['ID', 'Quantity', 'Price', 'Location'] 
-
 new_record.append(input("ID: ")) #ID
 new_record.append(input("Quantity: ")) #Quantity
 new_record.append(input("Price: ")) #Price
 new_record.append(input("Location: ").upper()) #Location
 
+'''
+NEW RECORD SIMULATION without using user input:
+
+new_record = f"05|13|24|A"
+# then go through signing/verifiying
+'''
+
 # formatting rec for hashing 
 new_record = f"{new_record[0]}|{new_record[1]}|{new_record[2]}|{new_record[3]}"
-print(new_record)
+print(f"New record inputed: {new_record}")
 
 # hashing new rec using SHA-256
 hashed_new_rec = hashlib.sha256(new_record.encode('utf-8')).hexdigest()
-print(hashed_new_rec)
+print(f"Hashed new record: {hashed_new_rec}")
 
 # turning hash to decimal for signing an verifiying
 dec_new_rec = int(hashed_new_rec, 16)  # 16 bc hexadec is base 16
-print(dec_new_rec)
+print(f"Hash hexadecimal to decimal: {dec_new_rec}")
 
 # seeing what keys to use based off of the claimed lcoation the new record is from
-# record locaiton category means *where the record has been added*
-if new_record[3] == 'A':     
-    signed_rec = signing(dec_new_rec, keys_A['p'], keys_A['q'], keys_A['e'])
-    print(f"Signed Record: {signed_rec}") # see if worked
+# record locaiton category means *where the record has been added and sent from*
+if new_record.endswith("A"):     
+    rec_sig = gen_sig(dec_new_rec, keys_A['p'], keys_A['q'], keys_A['e'])
+    print(f"Record Signature: {rec_sig}") # see if worked
+    ver_sig = gen_ver(hashed_new_rec, dec_new_rec, rec_sig, keys_A['p'], keys_A['q'], keys_A['e'])
 
-elif new_record[3] == 'B':
-    signed_rec = signing(dec_new_rec, keys_B['p'], keys_B['q'], keys_B['e'])
-    print(f"Signed Record: {signed_rec}") # see if worked
+elif new_record.endswith("B"):
+    rec_sig = gen_sig(dec_new_rec, keys_B['p'], keys_B['q'], keys_B['e'])
+    print(f"Record Signature: {rec_sig}") # see if worked
+    ver_sig = gen_ver(hashed_new_rec, dec_new_rec, rec_sig, keys_B['p'], keys_B['q'], keys_B['e'])
 
-elif new_record[3] == 'C':
-    signed_rec = signing(dec_new_rec, keys_C['p'], keys_C['q'], keys_C['e'])
-    print(f"Signed Record: {signed_rec}") # see if worked
-    
-elif new_record[3] == 'D':
-    signed_rec = signing(dec_new_rec, keys_D['p'], keys_D['q'], keys_D['e'])
-    print(f"Signed Record: {signed_rec}") # see if worked
+elif new_record.endswith("C"):
+    rec_sig = gen_sig(dec_new_rec, keys_C['p'], keys_C['q'], keys_C['e'])
+    print(f"Record Signature: {rec_sig}") # see if worked
+    ver_sig = gen_ver(hashed_new_rec, dec_new_rec, rec_sig, keys_C['p'], keys_C['q'], keys_C['e'])
+
+elif new_record.endswith("D"):
+    rec_sig = gen_sig(dec_new_rec, keys_D['p'], keys_D['q'], keys_D['e'])
+    print(f"Record Signature: {rec_sig}") # see if worked
+    ver_sig = gen_ver(hashed_new_rec, dec_new_rec, rec_sig, keys_D['p'], keys_D['q'], keys_D['e'])
 
 
 
