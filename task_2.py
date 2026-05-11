@@ -4,10 +4,10 @@ def task_2():
     inv = "01|32|12|D"
     sig = "0123456789abcdef"
     ver = True
-    sender = "D"
+
 
     #perform Byzantine Fault Tolerance
-    return bft(inv, sig, ver, sender)
+    return bft(inv, sig, ver)
 
 def bft(inv, sig, ver, sender):
 
