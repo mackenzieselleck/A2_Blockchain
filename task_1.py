@@ -1,4 +1,4 @@
-# For hashing the record 
+# For hashing the record
 import hashlib 
 
 # This initalises the key parameters
@@ -25,7 +25,7 @@ keys_D = {
 
 # SIGNING FUNCTION
 def gen_sig(record, p, q, e):
-   
+
     n = p * q                          # calc-ing 'n' pub-key parameter
     totient = (p - 1) * (q - 1)        # calc-ing 'totient' for private key gen
     d = pow(e, -1, totient)            # calc-ing 'd' private key for signing pow(e, -1, totient_param) == d = e^-1 mod totient
@@ -38,7 +38,7 @@ def gen_ver(hashed_new_rec, dec_new_rec, signed_recored, p, q, e):
     
     n = p * q                                 # calc-ing senders 'n' pub-key parameter
     decrypt_ver = pow(signed_recored, e, n)   # decrypting signature
-    hashed_decrypt_rec = hex(decrypt_ver)[2:] # THIS IS SHOWING THAT THE OG HASH OF THE RECORD IS tHE SAME AS IF decrypted sig WAS HASHED
+    hashed_decrypt_rec = hex(decrypt_ver)[2:] # gets rid of '0x' + THIS IS SHOWING THAT THE OG HASH OF THE RECORD IS tHE SAME AS IF decrypted sig WAS HASHED
 
     # Testing is decrypted signature is the same as record
     if dec_new_rec == decrypt_ver:
@@ -48,20 +48,17 @@ def gen_ver(hashed_new_rec, dec_new_rec, signed_recored, p, q, e):
         print(f"Signature Verificaiton INVALID")
         return False
 
-# Simulating a new record coming in 
+# Simulating a new record coming in
 # (new record incoming to be signed/verified and sent off for consensus)
-new_record = []  # ['ID', 'Quantity', 'Price', 'Location'] 
+new_record = []  # ['ID', 'Quantity', 'Price', 'Location']
 new_record.append(input("ID: ")) #ID
 new_record.append(input("Quantity: ")) #Quantity
 new_record.append(input("Price: ")) #Price
 new_record.append(input("Location: ").upper()) #Location
 
-'''
-NEW RECORD SIMULATION without using user input:
-(get rid off above inputs obvs)
-new_record = f"05|13|24|A"
-# then go through signing/verifiying
-'''
+# what inventory are you claiming to be:
+# what inventory are you actually: 
+inv_claim_actual = {'claim':input("What inventory are you claiming to be: "), 'actual':input("What inventory are you actually: ")}
 
 # formatting rec for hashing 
 new_record = f"{new_record[0]}|{new_record[1]}|{new_record[2]}|{new_record[3]}"
@@ -79,28 +76,44 @@ print(f"Hash hexadecimal to decimal: {dec_new_rec}")
 # record locaiton category means *where the record has been added and sent from*
 if new_record.endswith("A"):     
     rec_sig = gen_sig(dec_new_rec, keys_A['p'], keys_A['q'], keys_A['e'])
-    print(f"Record Signature: {rec_sig}") # see if worked
     ver_sig = gen_ver(hashed_new_rec, dec_new_rec, rec_sig, keys_A['p'], keys_A['q'], keys_A['e'])
+    inv = new_record  #ID|Quantity|Price|Location
+    print(f"Record Signature: {rec_sig}") # see if worked
 
 elif new_record.endswith("B"):
     rec_sig = gen_sig(dec_new_rec, keys_B['p'], keys_B['q'], keys_B['e'])
-    print(f"Record Signature: {rec_sig}") # see if worked
     ver_sig = gen_ver(hashed_new_rec, dec_new_rec, rec_sig, keys_B['p'], keys_B['q'], keys_B['e'])
+    inv = new_record  #ID|Quantity|Price|Location
+    print(f"Record Signature: {rec_sig}") # see if worked
 
 elif new_record.endswith("C"):
     rec_sig = gen_sig(dec_new_rec, keys_C['p'], keys_C['q'], keys_C['e'])
-    print(f"Record Signature: {rec_sig}") # see if worked
     ver_sig = gen_ver(hashed_new_rec, dec_new_rec, rec_sig, keys_C['p'], keys_C['q'], keys_C['e'])
+    inv = new_record  #ID|Quantity|Price|Location
+    print(f"Record Signature: {rec_sig}") # see if worked
 
 elif new_record.endswith("D"):
     rec_sig = gen_sig(dec_new_rec, keys_D['p'], keys_D['q'], keys_D['e'])
-    print(f"Record Signature: {rec_sig}") # see if worked
     ver_sig = gen_ver(hashed_new_rec, dec_new_rec, rec_sig, keys_D['p'], keys_D['q'], keys_D['e'])
-
-
+    inv = new_record  #ID|Quantity|Price|Location
+    print(f"Record Signature: {rec_sig}") # see if worked
 
 '''
+NEW RECORD SIMULATION without using user input:
+(get rid off above inputs obvs)
+new_record = f"05|13|24|A"
+# then go through signing/verifiying
 
+TAMPERED RECORD SIMULATION:
+new_record = f"05|13|24|A"
+tampered_record = new_record + "tamper-ingnessly"
+hashed_tamp_rec = hashlib.sha256(tampered_record.encode('utf-8')).hexdigest()
+dec_tamp_rec = int(hashed_tamp_rec, 16)
+tamp_ver = gen_ver(hashed_tamp_rec, dec_tamp_rec, rec_sig, keys_A['p'], keys_A['q'], keys_A['e'])
+tamp_ver = False ---> "Signature Verificaiton INVALID"
+'''
+
+'''
 # FUNCTIONS:
 # This gets the record from the inventory and formats like so: 
 # ID|QUANTITY|PRICE|LOCATION --> 01|32|12|D to then later be hashed, etc...
