@@ -3,3 +3,13 @@ Quantity: 32
 Price: 12
 Location: D
 
+ID: 02
+Quantity: 10
+Price: 25
+Location: A
+
+ID: 03
+Quantity: 3
+Price: 15
+Location: B
+

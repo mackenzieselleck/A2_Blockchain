@@ -1,15 +1,9 @@
-def task_2(mal):
-
-    #hard coded example - will replace once Task 1 is complete
-    inv = "01|32|12|D"
-    sig = "0123456789abcdef"
-    ver = True
-
+def task_2(mal, inv, ver):
 
     #perform Byzantine Fault Tolerance
-    return bft(inv, sig, ver, mal)
+    return bft(inv, ver, mal)
 
-def bft(inv, sig, ver, mal):
+def bft(inv, ver, mal):
 
     #hard code variables will replace once Task 1 is complete
     nodes = ["A", "B", "C", "D"]

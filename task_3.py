@@ -27,7 +27,8 @@ def task_3(user, query):
         sig = sign_query(query, other_keys['p'], other_keys['q'], other_keys['e'])
         output += f"Query Signature:\n{sig}\n\n"
     #verify user before accepting query
-    ver = verify_user(query, sig, auth_keys['p'], auth_keys['q'], auth_keys['e'])
+    ver, o_2 = verify_user(query, sig, auth_keys['p'], auth_keys['q'], auth_keys['e'])
+    output += o_2
 
     #if authentic respond
     if ver:
@@ -76,13 +77,16 @@ def verify_user(query, sig, p, q, e):
     m = int(hashlib.sha256(query.encode()).hexdigest(), 16)
     n = p * q
     c = pow(sig, e, n)
+    output = ""
 
     if c == m:
         ver = True
+        output += f"Hashed query: {m} is equal to Decrypted Signature: {c}\n\n"
     else:
         ver = False
+        output += f"Hashed query: {m} is not equal to Decrypted Signature: {c}\n\n"
 
-    return ver
+    return ver, output
 
 # retrieves response and simulates all inventory signatures
 def multi_sig(query):
@@ -182,11 +186,12 @@ def multi_sig(query):
 def search_inventory(inventory, query):
      
      prompt, item_id = query.split()
+     find_id = f"ID: {item_id}" 
 
      with open(inventory, 'r') as f:
         records = f.read().split('\n\n')
         for record in records:
-            if item_id in record:
+            if find_id in record:
                 lines = record.split('\n')
                 if "Quantity:" in lines[1]:
                
