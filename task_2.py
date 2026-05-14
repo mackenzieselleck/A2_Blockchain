@@ -5,7 +5,7 @@ def task_2(mal, inv, ver):
 
 def bft(inv, ver, mal):
 
-    #hard code variables will replace once Task 1 is complete
+    #hard code variables for inventory
     nodes = ["A", "B", "C", "D"]
     #fault tolerance algorithms
     n = len(nodes)

@@ -27,8 +27,8 @@ def task_1(actual, claim, quantity, price, location):
     # putting all the keys in one variable for simplicity
     all_keys = {'A':keys_A, 'B':keys_B, 'C':keys_C, 'D':keys_D}
 
-     # Simulating a new record coming in (through user input)
-    # (new record incoming to be signed/verified and sent off for consensus)
+    
+    # new record incoming to be signed/verified and sent off for consensus
     new_record = []   #['ID', 'Quantity', 'Price', 'Location']
     new_id = get_id()                         
     new_record.append(f"{new_id}")            #ID
@@ -59,8 +59,10 @@ def task_1(actual, claim, quantity, price, location):
     ver_sig, o = gen_ver(hashed_new_rec, dec_new_rec, rec_sig, all_keys[claim]['p'], all_keys[claim]['q'], all_keys[claim]['e'])
     output += o
 
+    #authentic if true
     if ver_sig:
         output += f"Record from Inventory {actual} is authenticated\n\n"
+    #unauthentic if false
     else:
         output += f"Inventory {actual} is claiming to be {claim}, but is NOT... Record is unauthentic\n\n"
         
@@ -95,6 +97,7 @@ def get_id():
 
     highest = 0
 
+    #finds latest iventory ID
     with open("inv_A.txt", 'r') as f:
         for line in f:
             if line.startswith("ID:"):
@@ -102,5 +105,6 @@ def get_id():
                 if current > highest:
                     highest = current
 
+    #returns latest iventory ID for new record
     return str(highest + 1).zfill(2)
 

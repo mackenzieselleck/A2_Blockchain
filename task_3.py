@@ -40,7 +40,7 @@ def task_3(user, query):
     
     return output
 
-#retrieves query -> will change with HTML
+#retrieves query
 def get_query(value):
 
     while True:
@@ -200,6 +200,5 @@ def search_inventory(inventory, query):
             return "Item ID not found"
 
 
-        f
 
 
