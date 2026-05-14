@@ -1,4 +1,4 @@
-def task_2():
+def task_2(mal):
 
     #hard coded example - will replace once Task 1 is complete
     inv = "01|32|12|D"
@@ -7,9 +7,9 @@ def task_2():
 
 
     #perform Byzantine Fault Tolerance
-    return bft(inv, sig, ver)
+    return bft(inv, sig, ver, mal)
 
-def bft(inv, sig, ver, sender):
+def bft(inv, sig, ver, mal):
 
     #hard code variables will replace once Task 1 is complete
     nodes = ["A", "B", "C", "D"]
@@ -20,58 +20,53 @@ def bft(inv, sig, ver, sender):
     #initialise vote
     v = 0
 
-    #get malicious nodes - prove BFT
-    bft_opt = mal_input(n)
     
-
+    output = ""
     #simulates node voting based on whether verification result
     for i, node in enumerate(nodes):
         #if malicious node - reject verified inv, accept tampered inv
-        if i < bft_opt:
+        if i < mal:
             if ver:
                 
-                print(node + " REJECTS inventory entry")
+                output += f"{node} REJECTS inventory entry\n"
             else:
                 v += 1
-                print(node + " ACCEPTS inventory entry")
+                output += f"{node} ACCEPTS inventory entry\n"
         #if trustworthy node - accept verified inv, reject tampered inv
         else:
             if ver:
                 v += 1
-                print(node + " ACCEPTS inventory entry")
+                output += f"{node} ACCEPTS inventory entry\n"
             else:
                 
-                print(node + " REJECTS inventory entry")
+                output += f"{node} REJECTS inventory entry\n"
 
     #if accept votes are meet threshold, accept inventory and append databases
     if v >= t:
-        print("inventory was ACCEPTED and entered into databases")
+        output += "Inventory entry was ACCEPTED and entered into databases"
         append_database(inv)
     else:
-        print("inventory was REJECTED")
+        output += "Inventory entry was REJECTED"
 
-    #reminder of accurate results based on malicious nodes (for demo)
-    if bft_opt >= f:
-        print("Reminder: malicious nodes is outside of fault tolerance - consensus results aren't accurate")
-
-    return 0
+   
+    return output
 
 #for demo, change malicious node amount to show BFT
-def mal_input(max_nodes):
+def mal_input(value):
     while True:
         try:
             #ensure malicious node input is within node range
-            value = int(input(f"Enter number of malicious nodes (0–{max_nodes}): "))
+            value = int(value)
 
-            if 0 <= value <= max_nodes:
-                return value
+            if 0 <= value <= 4:
+                return True, value
             else:
-                print(f"Please enter a number between 0 and {max_nodes}")
+                return False, "Invalid input. Please enter a number between 0 and 4\n"
         #ensure malicious node input is an integer
         except ValueError:
-            print("Invalid input. Please enter a number.")
+            return False, "Invalid input. Please enter an integer\n"
     
-    return value
+    
 
 #adds inventory to databases
 def append_database(inv):
@@ -89,9 +84,8 @@ def append_database(inv):
             f.write(f"Location: {location}\n\n")
         f.close
 
-    return 0
+    return
 
-task_2()
 
             
 

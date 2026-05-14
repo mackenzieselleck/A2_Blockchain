@@ -1,6 +1,6 @@
 import hashlib
 
-def task_3():
+def task_3(user, query):
     #procurement officer keys
     auth_keys = {
         'p': 1080954735722463992988394149602856332100628417,
@@ -14,50 +14,50 @@ def task_3():
         'e': 65537
     }
 
-    #will change to input from HTML
-    user = 1
+    output = ""
 
-    #retrieves query
-    query = get_query()
+    user = int(user)
+
     #authentic user sign with authentic keys
     if user == 1:
         sig = sign_query(query, auth_keys['p'], auth_keys['q'], auth_keys['e'])
+        output += f"Query Signature:\n{sig}\n\n"
     #unauthentic user sign with unauthentic keys
     else:
         sig = sign_query(query, other_keys['p'], other_keys['q'], other_keys['e'])
-
+        output += f"Query Signature:\n{sig}\n\n"
     #verify user before accepting query
     ver = verify_user(query, sig, auth_keys['p'], auth_keys['q'], auth_keys['e'])
 
     #if authentic respond
     if ver:
-        multi_sig(query)
+        output += "User Authentication:\n User verified. Query accepted\n\n"
+        output += multi_sig(query)
     #if unauthentic reject
     else:
-        print("Unauthorised User. Cannot submit query")
+        output += "Unauthorised User. Cannot submit query\n\n"
     
-    return
+    return output
 
 #retrieves query -> will change with HTML
-def get_query():
+def get_query(value):
 
     while True:
 
-        query = input("For item quantity -> GET_QUANTITY <ItemID>: ")
 
-        q = query.split()
+        q = value.split()
 
         if len(q) != 2:
-            print("Invalid format")
-            continue
+            return False, "Invalid format. Please use correct formatting\n"
+            
 
         prompt, item_id = q
 
         if prompt != "GET_QUANTITY":
-            print("Invalid query")
-            continue
+            return False, "Invalid query. Please use the query prompt 'GET_QUANTITY'\n"
+            
 
-        return query
+        return True, value
     
 #signs query 
 def sign_query(query, p, q, e):
@@ -106,15 +106,20 @@ def multi_sig(query):
     t = 1
     g_n = 1
 
+    output = ""
 
-    #submit ID to PKG
+
+    #each inventory submits ID to PKG
     for node in inventories:
+        #PKG signs ID using PKG keys
         g = pow(node['id'], d, n)
-        #return signed ID
+        #return signed ID to each inventory and save it for later
         node['sig'] = g
+        #each inventory then signs their random value using PKG public keys
         r = pow(node['ran_val'], e, n)
+        #multiply all signed random numbers
         t = r * t
-    
+    #calculate modulus of multiplied signed random numbers
     t = t % n
 
     #each inventory retrieves response from their database and sign it
@@ -145,23 +150,31 @@ def multi_sig(query):
     
     #signatures and combined to create multi signature
     s = s_a * s_b * s_c * s_d
+    #calculate s mod n
     s = s % n
+    #signing multi signature
     multi_sig_1 = pow(s, e, n)
-    #response and signature is sent
-    print(f"{i_a}\nSignature: {multi_sig_1}")
+    #response and signature is sent to user
+    output += f"Query Response: {i_a}\nSignature: {multi_sig_1}\n\n"
 
-    #verifies signature
+    #user verifies signature
+    #calculate inventory ID multiplied all together
     for node in inventories:
         g_n = g_n * node['id']
     
+    #multiply that with t and sign using hash of result and t mod n
     multi_sig_2 = pow(g_n * t, m_a, n)
+    output += f"Verification Signature Calculated: {multi_sig_2}\n\n"
 
+    #if the recieved signature matches the verification signature then it is valid
     if multi_sig_1 == multi_sig_2:
-        print("Signature Verified, response accepted")
+        output += f"{multi_sig_1} is equal to {multi_sig_2}\n"
+        output += "Signature Verified, response can be accepted\n"
     else:
-        print("Signature Invalid, response rejected")
+        output += f"{multi_sig_1} is not equal to {multi_sig_2}\n"
+        output += "Signature Invalid, response should be rejected\n"
     
-    return
+    return output
    
 
     
@@ -179,10 +192,9 @@ def search_inventory(inventory, query):
                
                     return lines[1].split(': ')[1]
         else:
-            return "not found"
+            return "Item ID not found"
 
 
-        f.close
+        f
 
 
-task_3()

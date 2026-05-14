@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Assignment 2</title>
+</head>
+
+<style>
+    body {
+
+    font-family: Arial, sans-serif;
+
+    text-align: center;
+
+    margin: 40px;
+
+    padding: 8px;
+
+    background-color: #f5f5f5;
+}
+
+h2 {
+
+    color:#301a7c;
+}
+
+
+input {
+
+    font-size: 14px;
+}
+
+.button {
+
+    font-size: 14px;
+    padding: 8px;
+    border: 2px solid #8563ff;
+
+}
+
+.button:hover{
+    background-color: #8563ff;
+
+}
+
+pre {
+
+    font-family: Arial, sans-serif;
+
+    white-space: pre-wrap;
+
+}
+</style>
+
+<body>
+
+    <hr>
+
+    <h2>Task 1</h2>
+
+      <form action="/task1" method="post">
+
+        What inventory will be submitting the record?
+        <br/>
+        <select name="actual" >
+            <option value="inv_a">Inventory A</option>
+            <option value="inv_b">Inventory B</option>
+            <option value="inv_c">Inventory C</option>
+            <option value="inv_d">Inventory D</option>
+        </select>
+        <br/><br/>
+
+        What inventory will they claim to be when submitting?
+        <br/>
+        <select name="claim" >
+            <option value="inv_a">Inventory A</option>
+            <option value="inv_b">Inventory B</option>
+            <option value="inv_c">Inventory C</option>
+            <option value="inv_d">Inventory D</option>
+        </select>
+        <br/><br/>
+        
+        Enter item quantity:
+        </br>
+        <input type="number" name="quantity"/>
+        <br/><br/>
+
+        Enter item price:
+        <br/>
+        <input type="number" name="price"/>
+        <br/><br/>
+
+         Enter location of item:
+        </br>
+        <select name="location" >
+            <option value="inv_a">Inventory A</option>
+            <option value="inv_b">Inventory B</option>
+            <option value="inv_c">Inventory C</option>
+            <option value="inv_d">Inventory D</option>
+        </select>
+        <br/><br/>
+        
+        <button class="button" type="submit">Submit Record Entry</button>
+        <br/><br/>
+        
+        Signature:
+        <br/>
+        <pre>{{ task_1_sig }}</pre>
+        <br/>
+        Verification:
+        <br/>
+        <pre>{{ task_1_ver }}</pre>
+
+    </form>
+
+
+    <hr>
+
+    <h2>Task 2</h2>
+
+    <form action="/task2" method="post">
+
+        Enter the number of malicious nodes to test chosen consensus protocol:
+        <br/>
+        <input type="text" size="30" name="malicious" placeholder="Enter a number between 0-4" />
+        <button class="button" type="submit">Run Consensus</button>
+        <br/>
+        <pre>{{ task_2_error }}</pre>
+        <br/><br/>
+        Consensus Results:
+        <br/>
+        <pre>{{ task_2_result }}</pre>
+
+    </form>
+
+
+    <hr>
+
+    <h2>Task 3</h2>
+
+      <form action="/task3" method="post">
+
+        Select user for query:
+        <br/>
+        <select name="user" >
+            <option value="1">Procurement Officer</option>
+            <option value="2">Unauthorised User</option>    
+        </select>
+        <br/><br/>
+        Enter item query, please use the format 'GET_QUANTITY {item ID}':
+        <br/>
+        <input type="text" size="30" name="query" placeholder="GET_QUANTITY {item ID}" />
+        <button class="button" type="submit">Submit Query</button>
+        <br/><br/>
+
+        <pre>{{ task_3_error }}</pre>
+        Query Results:
+        <pre>{{ task_3_result }}</pre>
+
+    </form>
+
+
+
+    
+
+</body>
+</html>
