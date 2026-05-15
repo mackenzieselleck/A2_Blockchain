@@ -89,12 +89,12 @@ pre {
         
         Enter item quantity:
         </br>
-        <input type="number" name="quantity"/>
+        <input type="number" name="quantity" required/>
         <br/><br/>
 
         Enter item price:
         <br/>
-        <input type="number" name="price"/>
+        <input type="number" name="price" required/>
         <br/><br/>
 
          Enter location of item:
@@ -124,7 +124,7 @@ pre {
 
         Enter the number of malicious nodes to test chosen consensus protocol:
         <br/>
-        <input type="text" size="30" name="malicious" placeholder="Enter a number between 0-4" />
+        <input type="text" size="30" name="malicious" placeholder="Enter a number between 0-4" required/>
         <button class="button" type="submit">Run Consensus</button>
         <br/>
         <pre>{{ task_2_error }}</pre>
@@ -151,7 +151,7 @@ pre {
         <br/><br/>
         Enter item query, please use the format 'GET_QUANTITY {item ID}':
         <br/>
-        <input type="text" size="30" name="query" placeholder="GET_QUANTITY {item ID}" />
+        <input type="text" size="30" name="query" placeholder="GET_QUANTITY {item ID}" required/>
         <button class="button" type="submit">Submit Query</button>
         <br/><br/>
 
